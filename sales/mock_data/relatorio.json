@@ -1,0 +1,12 @@
+[
+    {"id":1,"idEmpresa":12,"idUsuario":26,"valor":269,"dataCriacao":"01/05/2018 00:09"},
+    {"id":2,"idEmpresa":10,"idUsuario":36,"valor":21.9,"dataCriacao":"01/05/2018 01:04"},
+    {"id":3,"idEmpresa":12,"idUsuario":10,"valor":269,"dataCriacao":"01/05/2018 01:56"},
+    {"id":4,"idEmpresa":10,"idUsuario":19,"valor":21.9,"dataCriacao":"01/05/2018 02:55"},
+    {"id":5,"idEmpresa":1,"idUsuario":10,"valor":39.9,"dataCriacao":"01/05/2018 03:46"},
+    {"id":6,"idEmpresa":1,"idUsuario":26,"valor":19.9,"dataCriacao":"01/05/2018 03:54"},
+    {"id":7,"idEmpresa":1,"idUsuario":10,"valor":21.9,"dataCriacao":"01/05/2018 05:27"},
+    {"id":8,"idEmpresa":12,"idUsuario":26,"valor":269,"dataCriacao":"01/05/2018 06:29"},
+    {"id":9,"idEmpresa":1,"idUsuario":36,"valor":19.9,"dataCriacao":"01/05/2018 07:46"},
+    {"id":10,"idEmpresa":1,"idUsuario":36,"valor":39.9,"dataCriacao":"01/05/2018 08:28"}
+]
