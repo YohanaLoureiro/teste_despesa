@@ -8,7 +8,7 @@
     <meta tipo="description" content="">
     <meta tipo="author" content="">
 
-    <title>App Despesas</title>
+    <title>App relatorios</title>
 
     <!-- Bootstrap core CSS -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -21,133 +21,135 @@
 <body>
 
     <div id="wrapper">
-
-        <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
                     <a href="#">
                         Menu
-                    </a>
                 </li>
+                </a>
                 <li>
-                    <a href="home1.html">Perfil</a>
+                    <a href="#">Perfil</a>
                 </li>
                 <li>
                     <a href="#">Cadastro</a>
                 </li>
                 <li>
-                    <a href="home.html">Relatórios</a>
+                    <a href="depesa1.html">Despesas</a>
                 </li>
             </ul>
         </div>
-        <!-- /#sidebar-wrapper -->
 
-        <!-- Page Content -->
         <div id="page-content-wrapper">
             <div class="container-fluid">
-                    <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Menu Lateral</a>                      
+                <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Menu Lateral</a>
             </div>
         </div>
     </div>
-        <!-- /#page-content-wrapper -->
-        <div id="app">  
-                <div class="container">
-                    <h1 class="mt-3">{{ title }}</h1>
-        
-                    <table class="mt-5 table table-striped" v-if="relatorioTotal">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Tipo</th>
-                                <th>Preço</th>
-                                <th>Data</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="despesa in despesas">
-                                <td>{{ despesa.id }}</td>
-                                <td>{{ despesa.tipo }}</td>
-                                <td v-money="'R$'">{{ despesa.valor }}</td>
-                                <td>{{ despesa.date }}</td>
-                            </tr>
-                            
-                        </tbody>
-                        <tfoot>
-                                <tr>
-                                    <td>+</td>
-                                    <td>Total</td>
-                                    <td v-money="'R$'">{{ calculateTotal(relatorioTotal) }}</td>
-                                </tr>
-                            </tfoot>
-                    </table>
-                </div>
-            </div>
 
-    
-    <!-- /#wrapper -->
+    <div id="app">
+        <div class="container">
+            <h1 class="mt-3">{{ title }}</h1>
+            <table class="mt-5 table" v-if="ralatorioTotal">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Empresa/IdRelatoria</th>
+                        <th>Valor</th>
+                        <th>dataCriacao</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="relatorio in relatorios">
+                        <td>{{ relatorio.idRelatorio }}</td>
+                        <td>{{ nomeEmpresa }}</td>
+                        <td v-money="'R$'">{{ relatorio.valor }}</td>
+                        <td>{{ relatorio.dataCriacao }}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>+</td>
+                        <td>Total</td>
+                        <td v-money="'R$'">{{ calculateTotal(ralatorioTotal) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 
-    <!-- Bootstrap core JavaScript -->
+
     <script src="jquery/jquery.min.js"></script>
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
 
-    <!-- Menu Toggle Script -->
     <script>
-       Vue.directive('money', {
+        Vue.directive('money', {
             inserted(el, binding) {
                 const amount = parseFloat(el.innerHTML).toFixed(2)
                     .replace('.', ',')
                     .replace(/(\d)(?=(\d{3})+\,)/g, '$1.')
                 el.innerHTML = `${binding.value} ${amount}`
             }
-        });
+        })
         new Vue({
             el: '#app',
             data: {
-                title: 'Relatórios',
-                despesas: null
-         } 
-            ,
+                title: 'Home - Relatórios',
+                relatorios: null
+            },
             methods: {
-                getSales() {
-                    fetch('/mock_data/despesas.json')
+                getRelatorio() {
+                    fetch('/mock_data/relatorio.json')
                         .then(resp => resp.json())
-                        .then(data => this.despesas = data)
+                        .then(data => this.relatorios = data)
                 },
-                calculateTotal(despesas) {
-                    if (!despesas) return 0
-                    return despesas.reduce((total, despesa) => total + despesa.value, 0)
+                getEmpresa() {
+                    fetch('/mock_data/empresa.json')
+                        .then(resp => resp.json())
+                        .then(data => this.empresas = data)
+                },
+                calculateTotal(relatorios) {
+                    if (!relatorios) return 0
+                    return relatorios.reduce((total, relatorio) => total + relatorio.value, 0)
+                },
+                nomeEmpresa() {
+                    for (relatorio in relatorios)
+                        for (empresa in empresas)
+                            if (!empresa) return ""
+                            else (empresa.idEmpresa == relatorio.idEmpresa)
+                    return empresa.nomeEmpresa;
                 }
             },
             computed: {
-                relatorioTotal() {
-                    if (!this.despesas) return null
-                    const relatorioTotal = this.despesas.reduce((grouped, despesa) => {
-                        if (!grouped.hasOwnProperty(despesa.name)) {
-                            grouped[despesa.name] = {
-                                name: despesa.name,
-                                value: despesa.valor
+                ralatorioTotal() {
+                    if (!this.relatorios) return null
+                    const ralatorioTotal = this.relatorios.reduce((grouped, relatorio) => {
+                        if (!grouped.hasOwnProperty(relatorio.idRelatorio)) {
+                            grouped[relatorio.idRelatorio] = {
+                                idRelatorio: relatorio.idRelatorio,
+                                value: relatorio.valor
                             }
                             return grouped
                         }
-                        grouped[despesa.name].value += despesa.valor
+                        grouped[relatorio.idRelatorio].value += relatorio.valor
                         return grouped
                     }, {})
-                    return Object.values(relatorioTotal)
+                    return Object.values(ralatorioTotal)
                 }
             },
             mounted() {
-                this.getSales()
+                this.getRelatorio(),
+                    this.getEmpresa()
             }
         })
     </script>
 
     <script>
-         $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    })
+        $("#menu-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        })
     </script>
 
 </body>
